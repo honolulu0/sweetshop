@@ -39,7 +39,7 @@ class Product(models.Model):
     price = models.CharField(max_length=25, blank=True,  null=True, verbose_name='price', editable=True)
     cost = models.CharField(max_length=25, blank=True,  null=True, verbose_name='cost')
     sales_volume = models.CharField(max_length=25, blank=True, null=True, verbose_name='sales_volume')
-    amount = models.IntegerField(null=True, blank=True, verbose_name='amount')
+    amount = models.IntegerField(blank=True, null=True, verbose_name='amount')
     product_link = models.CharField(max_length=128, blank=True, null=True, verbose_name='product_link')
     profit_rate = models.CharField(max_length=128,  null=True,verbose_name='profit_rate')
     is_active = models.BooleanField(default=True, null=True,verbose_name='is_active')
