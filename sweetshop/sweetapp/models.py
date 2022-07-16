@@ -4,15 +4,16 @@ from django.db import models
 from django.forms import ModelForm
 from datetime import datetime
 
+
 # Create your models here.
 
 
 class User(models.Model):
     name = models.CharField(max_length=25, unique=True, verbose_name='user')
-    password = models.CharField(max_length=128, verbose_name='password')
-    is_active = models.BooleanField(default=True, verbose_name='is_active')
+    password = models.CharField(max_length=128, blank=True, verbose_name='password')
+    is_active = models.BooleanField(default=True, blank=True, verbose_name='is_active')
     is_superuser = models.BooleanField(default=False, blank=True, verbose_name='is_superuser')
-    create_time = models.DateTimeField(default=datetime.now, null=True, verbose_name='create_time')
+    create_time = models.DateTimeField(default=datetime.now, null=True, blank=True, verbose_name='create_time')
 
     def __str__(self):
         return self.name
@@ -36,13 +37,13 @@ class CustomDateTimeField(models.DateTimeField):
 
 class Product(models.Model):
     name = models.CharField(max_length=25, unique=True, verbose_name='product')
-    price = models.CharField(max_length=25, blank=True,  null=True, verbose_name='price', editable=True)
-    cost = models.CharField(max_length=25, blank=True,  null=True, verbose_name='cost')
+    price = models.CharField(max_length=25, blank=True, null=True, verbose_name='price', editable=True)
+    cost = models.CharField(max_length=25, blank=True, null=True, verbose_name='cost')
     sales_volume = models.CharField(max_length=25, blank=True, null=True, verbose_name='sales_volume')
     amount = models.IntegerField(blank=True, null=True, verbose_name='amount')
     product_link = models.CharField(max_length=128, blank=True, null=True, verbose_name='product_link')
-    profit_rate = models.CharField(max_length=128,  null=True,verbose_name='profit_rate')
-    is_active = models.BooleanField(default=True, null=True,verbose_name='is_active')
+    profit_rate = models.FloatField(max_length=128, null=True, verbose_name='profit_rate')
+    is_active = models.BooleanField(default=True, null=True, verbose_name='is_active')
 
     create_time = models.DateTimeField(default=datetime.now, null=True, blank=True, verbose_name='create_time')
 

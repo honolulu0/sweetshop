@@ -59,12 +59,12 @@ class CreateProductView(APIView):
 
     def post(self, request):
         name = request.data.get("name")
-        price = request.data.get("price",100)
-        cost = request.data.get("cost",50)
-        sales_volume = request.data.get("sales_volume", 100)
-        amount = request.data.get("amount", 100)
+        price = request.data.get("price", 100) if request.data.get("price", 100) else 100
+        cost = request.data.get("cost", 50) if request.data.get("cost", 50) else 50
+        sales_volume = request.data.get("sales_volume", 100) if request.data.get("sales_volume", 100) else 100
+        amount = request.data.get("amount", 100) if request.data.get("amount", 100) else 100
         product_link = request.data.get("product_link", None)
-        profit_rate = request.data.get("profit_rate", None)
+        profit_rate = request.data.get("profit_rate", 0.1) if request.data.get("profit_rate", 0.1) else 0.1
         is_active = request.data.get("is_active", True)
         # create_time = request.data.get("create_time", datetime.datetime)
         if not name:
@@ -100,6 +100,103 @@ class CreateProductView(APIView):
                      "product_link": product_link,
                      "profit_rate": profit_rate,
                      "is_active": is_active,
+                     },
+            'code': 1
+        }, status=200, safe=False)
+
+
+class UpdateProductView(APIView):
+    """
+    View to add product
+
+    {"id':8
+    "name": "sweet200",
+    "price": 20,
+    "cost": 10,
+    "amount": 978,
+    "product_link": "199",
+    "profit_rate": 0.1,
+    "is_active": 1
+     }
+
+    """
+
+    def post(self, request):
+        id = request.data.get("id")
+        name = request.data.get("name")
+        price = request.data.get("price", 100) if request.data.get("price", 100) else 100
+        cost = request.data.get("cost", 50) if request.data.get("cost", 50) else 50
+        sales_volume = request.data.get("sales_volume", 100) if request.data.get("sales_volume", 100) else 100
+        amount = request.data.get("amount", 100) if request.data.get("amount", 100) else 100
+        product_link = request.data.get("product_link", None)
+        profit_rate = request.data.get("profit_rate", 0.1) if request.data.get("profit_rate", 0.1) else 0.1
+        is_active = request.data.get("is_active", True)
+        # create_time = request.data.get("create_time", datetime.datetime)
+        if not id:
+            return JsonResponse(data={
+                'message': "Error, id not exist",
+                'code': 0
+            }, status=200, safe=False)
+
+        product = Product.objects.filter(id=id).first()
+        if not product:
+            return JsonResponse(data={
+                'message': "Error,product not exist",
+                'code': 0
+            }, status=200, safe=False)
+
+        if Product.objects.filter(name=name).first():
+            return JsonResponse(data={
+                'message': "Error, Product exists",
+                'code': 0
+            }, status=200, safe=False)
+
+        product.name = name
+        product.price = price
+        product.cost = cost
+        product.sales_volume = sales_volume
+        product.amount = amount
+        product.product_link = product_link
+        product.profit_rate = profit_rate
+        product.is_active = is_active
+        product.save()
+
+        return JsonResponse(data={
+            'message': "update succeed",
+            'data': {"name": name,
+                     "price": price,
+                     "cost": cost,
+                     "amount": amount,
+                     "sales_volume": sales_volume,
+                     "product_link": product_link,
+                     "profit_rate": profit_rate,
+                     "is_active": is_active,
+                     },
+            'code': 1
+        }, status=200, safe=False)
+
+
+class DeleteProductView(APIView):
+    def post(self, request):
+        id = request.data.get("id")
+
+        if not id:
+            return JsonResponse(data={
+                'message': "Error, ID not exist",
+                'code': 0
+            }, status=200, safe=False)
+        product = Product.objects.filter(id=id).first()
+        if not product:
+            return JsonResponse(data={
+                'message': "Error,product not exist",
+                'code': 0
+            }, status=200, safe=False)
+
+        product.delete()
+
+        return JsonResponse(data={
+            'message': "delete product succeed",
+            'data': {"name": product.name
                      },
             'code': 1
         }, status=200, safe=False)
@@ -141,44 +238,59 @@ class CreateUserView(APIView):
 
     def post(self, request):
         name = request.data.get("name")
-        price = request.data.get("price")
-        cost = request.data.get("cost")
-        amount = request.data.get("amount")
-        product_link = request.data.get("product_link")
-        profit_rate = request.data.get("profit_rate")
-        is_active = request.data.get("is_active")
-        create_time = request.data.get("create_time")
-        if not name or not price or not profit_rate:
+        password = request.data.get("password", '')
+        is_superuser = request.data.get("is_superuser", False)
+        is_active = True
+        if not name:
             return JsonResponse(data={
                 'message': "Error, Required fields not exist",
                 'code': 0
             }, status=200, safe=False)
 
-        if Product.objects.filter(key=name).first():
+        if User.objects.filter(name=name).first():
             return JsonResponse(data={
                 'message': "Error, Product exists",
                 'code': 0
             }, status=200, safe=False)
-        product = Product.objects.create(
+        user = User.objects.create(
             name=name,
-            price=price,
-            cost=cost,
-            amount=amount,
-            product_link=product_link,
-            profit_rate=profit_rate,
+            password=password,
             is_active=is_active,
-            create_time=create_time)
+            is_superuser=is_superuser, )
 
         return JsonResponse(data={
-            'message': "add succeed",
-            'data': {"name": name,
-                     "price": price,
-                     "cost": cost,
-                     "amount": amount,
-                     "product_link": product_link,
-                     "profit_rate": profit_rate,
-                     "is_active": is_active,
-                     "create_time": create_time,
+            'message': "add user succeed",
+            'data': {"name": name
+                     },
+            'code': 1
+        }, status=200, safe=False)
+
+
+class DeleteUserView(APIView):
+    """
+    View to delete user
+
+    """
+
+    def post(self, request):
+        id = request.data.get("id")
+        if not id:
+            return JsonResponse(data={
+                'message': "Error, ID not exist",
+                'code': 0
+            }, status=200, safe=False)
+        user = User.objects.filter(id=id).first()
+        if not user:
+            return JsonResponse(data={
+                'message': "Error,user not exist",
+                'code': 0
+            }, status=200, safe=False)
+
+        user.delete()
+
+        return JsonResponse(data={
+            'message': "delete user succeed",
+            'data': {"name": user.name
                      },
             'code': 1
         }, status=200, safe=False)
