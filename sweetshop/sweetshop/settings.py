@@ -79,11 +79,11 @@ WSGI_APPLICATION = 'sweetshop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'new_project6',
-        'HOST': '10.245.29.243',
+        'NAME': 'new_project7',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
-        'USER': 'project_user6',
-        'PASSWORD': 'project_user6',
+        'USER': 'root',
+        'PASSWORD': 'weidcloud',
     }
 }
 

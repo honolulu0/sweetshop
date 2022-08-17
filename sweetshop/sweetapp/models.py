@@ -7,13 +7,26 @@ from datetime import datetime
 
 # Create your models here.
 
+class Notice(models.Model):
+    content = models.CharField(max_length=255, verbose_name='content')
+
+    def __str__(self):
+        return self.content
+
+    class Meta:
+        verbose_name = 'notice'
+        verbose_name_plural = verbose_name
+        db_table = 'tb_sweet_notice'
+        ordering = ['id']
+
 
 class User(models.Model):
     name = models.CharField(max_length=25, unique=True, verbose_name='user')
-    password = models.CharField(max_length=128, blank=True, verbose_name='password')
+    password = models.CharField(max_length=128, verbose_name='password')
     is_active = models.BooleanField(default=True, blank=True, verbose_name='is_active')
     is_superuser = models.BooleanField(default=False, blank=True, verbose_name='is_superuser')
     create_time = models.DateTimeField(default=datetime.now, null=True, blank=True, verbose_name='create_time')
+    image = models.TextField()
 
     def __str__(self):
         return self.name
@@ -33,7 +46,6 @@ class CustomDateTimeField(models.DateTimeField):
             val.replace(microsecond=0)
             return val.isoformat()
         return ''
-
 
 class Product(models.Model):
     name = models.CharField(max_length=25, unique=True, verbose_name='product')
